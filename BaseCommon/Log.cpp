@@ -97,14 +97,14 @@ void Log(unsigned int level, const char* fmt, ...)
 		exit(1);
 }
 
-static void WriteJSON(const std::string& topLevel, nlohmann::json& json)
+static void WriteJSON(const std::string& topLevel, nlohmann::json& json, bool retain)
 {
 	if (m_mqtt != nullptr) {
 		nlohmann::json top;
 
 		top[topLevel] = json;
 
-		m_mqtt->publish("json", top.dump());
+		m_mqtt->publish("json", top.dump(), retain);
 	}
 }
 
@@ -115,7 +115,7 @@ void writeJSONStatus(const std::string& status)
 	json["timestamp"] = CUtils::createTimestamp();
 	json["message"]   = status;
 
-	WriteJSON("status", json);
+	WriteJSON("status", json, false);
 }
 
 void writeJSONLinking(const std::string& repeater, const std::string& reason, const std::string& protocol, const std::string& reflector)
@@ -129,7 +129,7 @@ void writeJSONLinking(const std::string& repeater, const std::string& reason, co
 	json["reflector"] = reflector;
 	json["protocol"]  = protocol;
 
-	WriteJSON("link", json);
+	WriteJSON("link", json, true);
 }
 
 void writeJSONUnlinked(const std::string& repeater, const std::string& reason)
@@ -141,7 +141,7 @@ void writeJSONUnlinked(const std::string& repeater, const std::string& reason)
 	json["action"]    = "unlinked";
 	json["reason"]    = reason;
 
-	WriteJSON("link", json);
+	WriteJSON("link", json, true);
 }
 
 void writeJSONFailed(const std::string& repeater)
@@ -152,7 +152,7 @@ void writeJSONFailed(const std::string& repeater)
 	json["repeater"]  = repeater;
 	json["action"]    = "failed";
 
-	WriteJSON("link", json);
+	WriteJSON("link", json, true);
 }
 
 void writeJSONRelinking(const std::string& repeater, const std::string& protocol, const std::string& reflector)
@@ -165,6 +165,6 @@ void writeJSONRelinking(const std::string& repeater, const std::string& protocol
 	json["reflector"] = reflector;
 	json["protocol"]  = protocol;
 
-	WriteJSON("link", json);
+	WriteJSON("link", json, true);
 }
 

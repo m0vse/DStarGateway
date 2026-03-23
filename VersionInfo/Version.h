@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2010-2015 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2010-2015,2026 by Jonathan Naylor G4KLX
  *   Copyright (c) 2017 by Thomas A. Early N7TAE
  *   Copyright (c) 2021 by Geoffrey Merck F4FXL / KC3FRA
  *
@@ -26,7 +26,7 @@
 
 const std::string PRODUCT_NAME("DStarGateway");
 const std::string VENDOR_NAME("Geoffrey Merck F4FXL / KC3FRA and Contributors");
-const std::string VERSION("20260304");
+const std::string VERSION("20260323");
 const std::string LONG_VERSION = VERSION + "-" + gitversion;
 const std::string FULL_PRODUCT_NAME = PRODUCT_NAME + " v" + VERSION + "-" + gitversion + "-" + gitBranch;
 const std::string SHORT_PRODUCT_NAME = "DStarGW v" + VERSION + "-" + gitversion;
