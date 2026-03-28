@@ -23,11 +23,11 @@ export LOG_DIR=/var/log/dstargateway/
 
 ifeq ($(ENABLE_DEBUG), 1)
 # choose this if you want debugging help
-export CPPFLAGS=-g -rdynamic -DBOOST_STACKTRACE_USE_ADDR2LINE -DDEBUG_DSTARGW -no-pie -fno-pie -ggdb -W -Wall -std=c++17
+export CPPFLAGS=-g -rdynamic -DBOOST_STACKTRACE_USE_ADDR2LINE -DDEBUG_DSTARGW -no-pie -fno-pie -ggdb -W -Wall -std=c++17 -Wno-psabi
 export LDFLAGS=-ldl -no-pie -fno-pie
 else
 # or, you can choose this for a much smaller executable without debugging help
-export CPPFLAGS=-W -O3 -Wall -std=c++17
+export CPPFLAGS=-W -O3 -Wall -std=c++17 -Wno-psabi
 endif
 
 export CC=g++
@@ -88,7 +88,7 @@ clean:
 -include $(DEPS)
 
 .PHONY: install
-install : DStarGateway/dstargateway DGWRemoteControl/dgwremotecontrol
+install : DStarGateway/dstargateway
 # install accessories
 	$(MAKE) -C DGWTextTransmit install
 	$(MAKE) -C DGWTimeServer install

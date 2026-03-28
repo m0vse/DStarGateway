@@ -188,7 +188,7 @@ void CMQTTConnection::onConnect(mosquitto* mosq, void* obj, int rc)
 	}
 }
 
-void CMQTTConnection::onSubscribe(mosquitto* mosq, void* obj, int mid, int qosCount, const int* grantedQOS)
+void CMQTTConnection::onSubscribe(mosquitto* mosq, void* obj, int /* mid */, int qosCount, const int* grantedQOS)
 {
 	assert(mosq != nullptr);
 	assert(obj != nullptr);
