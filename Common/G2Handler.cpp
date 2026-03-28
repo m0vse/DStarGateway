@@ -72,11 +72,11 @@ void CG2Handler::setHeaderLogger(CHeaderLogger* logger)
 	m_headerLogger = logger;
 }
 
-void CG2Handler::process(CHeaderData& header)
+void CG2Handler::process(CHeaderData &header)
 {
 	// Is this a busy reply?
 	unsigned char flag1 = header.getFlag1();
-	if (flag1 == 0x01) {
+	if (flag1 == 0x01)	{
 		// Don't check the incoming stream
 		// CLog::logInfo("G2 busy message received"));
 		return;
@@ -84,8 +84,8 @@ void CG2Handler::process(CHeaderData& header)
 
 #ifdef USE_STARNET
 	// Check to see if this is for StarNet
-	CStarNetHandler* handler = CStarNetHandler::findStarNet(header);
-	if (handler != NULL) {
+	CStarNetHandler *handler = CStarNetHandler::findStarNet(header);
+	if (handler != NULL){
 		// Write to Header.log if it's enabled
 		if (m_headerLogger != NULL)
 			m_headerLogger->write("StarNet", header);
@@ -101,26 +101,43 @@ void CG2Handler::process(CHeaderData& header)
 
 	in_addr address = header.getYourAddress();
 	unsigned int id = header.getId();
-	
+
 	// Find the destination repeater
-	CRepeaterHandler* repeater = CRepeaterHandler::findDVRepeater(header.getRptCall2());
+	CRepeaterHandler *repeater = CRepeaterHandler::findDVRepeater(header.getRptCall2());
 	if (repeater == NULL) {
 		CLog::logInfo("Incoming G2 header from %s to unknown repeater - %s", header.getMyCall1().c_str(), header.getRptCall2().c_str());
-		return;		// Not found, ignore
+		return; // Not found, ignore
 	}
 
-	CG2Handler* route = new CG2Handler(repeater, address, id);
+	CG2Handler *route = new CG2Handler(repeater, address, id);
 
-	for (unsigned int i = 0U; i < m_maxRoutes; i++) {
-		if (m_routes[i] == NULL) {
-			m_routes[i] = route;
+	for (unsigned int i = 0U; i < m_maxRoutes; i++)
+	{
+		if (m_routes[i] != NULL)
+		{
+			if (m_routes[i]->m_id == id)
+			{
+				// This should never happen, but if it does, delete the old route and replace it with the new one
+				CLog::logDebug("Duplicate G2 route received, replacing existing route");
 
-			// Write to Header.log if it's enabled
-			if (m_headerLogger != NULL)
-				m_headerLogger->write("G2", header);
+				delete m_routes[i];
+				m_routes[i] = route;
 
-			repeater->process(header, DIR_INCOMING, AS_G2);
-			return;
+				repeater->process(header, DIR_INCOMING, AS_G2);
+				return;
+			}
+		} 
+		else {
+			if (m_routes[i] == NULL) {
+				m_routes[i] = route;
+
+				// Write to Header.log if it's enabled
+				if (m_headerLogger != NULL)
+					m_headerLogger->write("G2", header);
+
+				repeater->process(header, DIR_INCOMING, AS_G2);
+				return;
+			}
 		}
 	}
 
