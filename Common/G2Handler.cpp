@@ -118,7 +118,7 @@ void CG2Handler::process(CHeaderData &header)
 			if (m_routes[i]->m_id == id)
 			{
 				// This should never happen, but if it does, delete the old route and replace it with the new one
-				CLog::logInfo("Duplicate G2 route received, replacing existing route");
+				CLog::logDebug("Duplicate G2 route received, replacing existing route");
 
 				delete m_routes[i];
 				m_routes[i] = route;
