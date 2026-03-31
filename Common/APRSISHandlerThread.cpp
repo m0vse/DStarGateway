@@ -109,6 +109,8 @@ void* CAPRSISHandlerThread::Entry()
 				LogInfo("APRS Frame sent to IS ==> %s", frameStr.c_str());
 
 				m_mqtt->publish("aprs-gateway/aprs", frameStr);
+			} else {
+				Sleep(20UL);
 			}
 #ifdef notdef
 			{
