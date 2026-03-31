@@ -115,9 +115,10 @@ void CG2Handler::process(CHeaderData& header)
 		} else {
 			if (m_routes[i] == NULL) {
 				m_routes[i] = route;
-
+			}
 			repeater->process(header, DIR_INCOMING, AS_G2);
 			return;
+
 		}
 	}
 
