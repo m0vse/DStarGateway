@@ -103,12 +103,14 @@ void* CAPRSISHandlerThread::Entry()
 	try {
 #endif
 		while (!m_exit) {
-			if(!m_queue.empty()){
+			if (!m_queue.empty()){
 				auto frameStr = m_queue.getData();
 
 				LogInfo("APRS Frame sent to IS ==> %s", frameStr.c_str());
 
 				m_mqtt->publish("aprs-gateway/aprs", frameStr);
+			} else {
+				Sleep(20UL);
 			}
 #ifdef notdef
 			{
@@ -120,15 +122,14 @@ void* CAPRSISHandlerThread::Entry()
 					m_socket.close();
 					LogError("Error when reading from the APRS server");
 					startReconnectionTimer();
-				}
-				else if(length > 0 && line[0] == '#') {
+				} else if(length > 0 && line[0] == '#') {
 					m_keepAliveTimer.start();
-				}
-				else if(line.length() > 0 && line[0] != '#') {
+				} else if(line.length() > 0 && line[0] != '#') {
 					m_keepAliveTimer.start();
 					LogDebug("APRS Frame received from IS <== %s", line.c_str());
+
 					CAPRSFrame readFrame;
-					if(CAPRSParser::parseFrame(line, readFrame)) {
+					if (CAPRSParser::parseFrame(line, readFrame)) {
 						for(auto cb : m_APRSReadCallbacks) {
 							CAPRSFrame f(readFrame);
 							cb->readAPRSFrame(f);
